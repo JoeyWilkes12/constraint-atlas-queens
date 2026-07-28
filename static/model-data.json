@@ -1,0 +1,37 @@
+{
+  "size": 7,
+  "baseline": [3, 6, 1, 5, 2, 0, 4],
+  "columns": ["A", "B", "C", "D", "E", "F", "G"],
+  "regionNames": ["Amber", "Beryl", "Cobalt", "Dahlia", "Ember", "Fern", "Garnet"],
+  "regions": [
+    [0, 0, 4, 4, 4, 0, 6],
+    [0, 0, 0, 0, 4, 0, 6],
+    [0, 0, 0, 0, 0, 0, 6],
+    [0, 0, 0, 0, 0, 5, 6],
+    [0, 0, 3, 0, 0, 5, 5],
+    [2, 2, 3, 0, 0, 1, 5],
+    [2, 2, 3, 3, 1, 1, 1]
+  ],
+  "rules": {
+    "rows": {
+      "title": "Rows",
+      "formula": "∀r. Σc qᵣ,ᶜ = 1",
+      "text": "exactly one selection per row"
+    },
+    "columns": {
+      "title": "Columns",
+      "formula": "∀c. Σr qᵣ,ᶜ = 1",
+      "text": "exactly one selection per column"
+    },
+    "regions": {
+      "title": "Regions",
+      "formula": "∀g. Σ(r,c)∈g qᵣ,ᶜ = 1",
+      "text": "exactly one selection per coloured region"
+    },
+    "touching": {
+      "title": "Non-touching",
+      "formula": "max(|Δr|, |Δc|) = 1 ⇒ qᵤ + qᵥ ≤ 1",
+      "text": "adjacent cells, including orthogonal and diagonal neighbors, cannot both be selected"
+    }
+  }
+}

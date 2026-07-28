@@ -1,0 +1,13 @@
+{
+  "name": "constraint-atlas-queens",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "build": "node scripts/build-static.mjs",
+    "test": "npm run build && node --test tests/rendered-html.test.mjs"
+  },
+  "type": "module"
+}

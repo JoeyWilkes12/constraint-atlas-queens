@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Constraint Atlas — Queens is the smallest useful model</title>
+    <meta name="description" content="An inspectable constraint workbench using regional Queens to connect Z3, formal models, explanations, and quantitative applications.">
+    <meta property="og:title" content="Constraint Atlas — Queens is the smallest useful model">
+    <meta property="og:description" content="An inspectable constraint workbench using regional Queens to connect Z3, formal models, explanations, and quantitative applications.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="%%OG_IMAGE_URL%%">
+    <meta property="og:image:width" content="1734">
+    <meta property="og:image:height" content="907">
+    <meta property="og:image:alt" content="Constraint Atlas — Queens is the smallest useful model">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Constraint Atlas — Queens is the smallest useful model">
+    <meta name="twitter:description" content="An inspectable constraint workbench using regional Queens to connect Z3, formal models, explanations, and quantitative applications.">
+    <meta name="twitter:image" content="%%OG_IMAGE_URL%%">
+    <style>%%INLINE_CSS%%</style>
+  </head>
+  <body>
+    <main>
+      <header class="site-header">
+        <a class="wordmark" href="#top">Constraint Atlas <span>· Queens</span></a>
+        <nav aria-label="Section navigation">
+          <a href="#workbench">Workbench</a>
+          <a href="#encodings">Encodings</a>
+          <a href="#transfer">Transfer</a>
+          <a href="#ledger">Ledger</a>
+        </nav>
+      </header>
+
+      <section id="top" class="hero">
+        <p class="eyebrow">A constraint workbench for quantitative professionals</p>
+        <h1>Queens is the <em>smallest useful model.</em></h1>
+        <p class="lede">A regional board turns strategy into an explicit model: variables, partitions, conflicts, a solver contract, and evidence you can inspect rather than merely trust.</p>
+        <div class="hero-notes" aria-label="Model characteristics">
+          <span>Boolean grid</span>
+          <span>Finite domains</span>
+          <span>Transparent search</span>
+        </div>
+      </section>
+
+      <section id="workbench" class="workbench" aria-labelledby="workbench-title">
+        <div class="section-kicker">
+          <p class="eyebrow">01 / live model</p>
+          <h2 id="workbench-title">Regional Queens</h2>
+          <p>Draft assumptions and rule changes, then run the bounded teaching checker. The baseline remains a separate, supplied solver evidence layer.</p>
+        </div>
+
+        <div class="evidence-strip">
+          <div>
+            <strong>Precomputed Z3 result</strong>
+            <span>Verified 7×7 baseline: SAT and unique; a separate blocking-clause query was UNSAT.</span>
+          </div>
+          <div>
+            <strong>Derived model analysis</strong>
+            <span id="derived-evidence">Run 1: 4 active rule families · 0 active assumptions · %%INITIAL_EXPLORED%% deterministic nodes.</span>
+          </div>
+          <div>
+            <strong>Illustrative search</strong>
+            <span>Teaching trace only — <b>not Z3’s internal trace.</b></span>
+          </div>
+        </div>
+
+        <div class="lab-grid">
+          <section class="board-panel" aria-label="Regional Queens board">
+            <div class="board-toolbar">
+              <div>
+                <span id="result-status" class="status sat">SAT</span>
+                <span id="result-copy" class="result-copy" aria-live="polite">Run 1 has a witness.</span>
+              </div>
+              <div class="actions">
+                <button id="reset-button" type="button">Reset</button>
+                <button id="run-button" class="button-accent" type="button" disabled>Draft active</button>
+                <button id="baseline-button" type="button">Reveal baseline</button>
+              </div>
+            </div>
+
+            <div class="board-wrap">
+              <div class="corner" aria-hidden="true"></div>
+              %%COLUMN_AXES%%
+              %%ROW_AXES%%
+              <div class="board" role="grid" aria-label="Constraint board; use arrow keys to move and Enter or Space to toggle a draft queen assumption">
+                %%BOARD_CELLS%%
+              </div>
+            </div>
+
+            <div class="legend">
+              <span><i class="baseline-dot"></i> Precomputed baseline</span>
+              <span><i class="draft-dot"></i> Draft assumption</span>
+              <span><i class="witness-dot"></i> Active run witness</span>
+              <span><i class="region-dot"></i> Region partition</span>
+            </div>
+          </section>
+
+          <aside class="control-panel">
+            <div class="inspector">
+              <p class="micro-label">Selected cell</p>
+              <h3><b id="selected-coordinate">A1</b> <span id="selected-region">· Amber</span></h3>
+              <p id="selected-description">No draft assumption here. A witness queen, if shown, belongs to the active run.</p>
+            </div>
+
+            <fieldset>
+              <legend>Draft constraint families</legend>
+              %%RULE_CONTROLS%%
+            </fieldset>
+
+            <div class="counts">
+              <div><span>Variables</span><b>49 Bool</b></div>
+              <div><span>Active exact-one</span><b id="exact-one-count">21</b></div>
+              <div><span>Active adjacency pairs</span><b id="adjacency-count">156</b></div>
+              <div><span>Draft / active / witness</span><b id="selection-counts">0 / 0 / %%INITIAL_WITNESS_COUNT%%</b></div>
+            </div>
+            <p class="provenance">The Python baseline uses 21 exact-one equalities and 312 directed neighbor implications. The normalized model has 156 undirected adjacent pairs; with row and column rules active, 84 orthogonal pairs are redundant and 72 diagonal pairs remain. The Non-touching toggle itself always covers all 156 adjacent pairs independently.</p>
+          </aside>
+        </div>
+
+        <div class="trace-source">
+          <section class="trace-panel">
+            <div class="panel-heading">
+              <div>
+                <p id="trace-run-label" class="micro-label">Illustrative search · active run 1</p>
+                <h3>Step trace</h3>
+              </div>
+              <span>not Z3’s internal trace</span>
+            </div>
+            <ol id="trace-list">
+              <li class="current">%%INITIAL_TRACE%%</li>
+            </ol>
+            <div class="step-controls">
+              <span id="step-count">1 / %%INITIAL_TRACE_COUNT%%</span>
+              <button id="back-button" type="button" disabled>Back</button>
+              <button id="next-button" type="button">Next</button>
+            </div>
+          </section>
+
+          <section class="source-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="micro-label">Portable active run</p>
+                <h3>SMT-LIB source</h3>
+              </div>
+              <div class="actions">
+                <button id="copy-button" type="button">Copy</button>
+                <button id="download-button" class="button-accent" type="button">Export .smt2</button>
+              </div>
+            </div>
+            <pre id="smt-source" aria-label="SMT-LIB source for active run 1">%%INITIAL_SMT%%</pre>
+          </section>
+        </div>
+      </section>
+
+      <section id="encodings" class="content-section">
+        <p class="eyebrow">02 / representations</p>
+        <h2>Same semantics, different leverage.</h2>
+        <div class="encoding-grid">
+          <article>
+            <p class="card-index">A</p>
+            <h3>Boolean grid</h3>
+            <code>q[r,c] ∈ Bool</code>
+            <p><b>Contract:</b> a cell is selected or not; all requested partitions are exact-one.</p>
+            <p><b>Trade-off:</b> most transparent for audits and regional rules; 49 variables here, quadratic pairwise exclusions.</p>
+          </article>
+          <article>
+            <p class="card-index">B</p>
+            <h3>Integer per row</h3>
+            <code>col[r] ∈ 0..6</code>
+            <p><b>Contract:</b> each row chooses one column; distinctness captures columns.</p>
+            <p><b>Trade-off:</b> compact for classical Queens; regions and conditional rules need element/lookup constraints.</p>
+          </article>
+          <article>
+            <p class="card-index">C</p>
+            <h3>Conflict graph</h3>
+            <code>∀(u,v)∈E. xᵤ + xᵥ ≤ 1</code>
+            <p><b>Contract:</b> vertices are choices; edges are incompatible pairs; partitions encode coverage.</p>
+            <p><b>Trade-off:</b> makes sparse conflicts legible; loses row/column geometry without annotations.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="transfer" class="content-section transfer">
+        <p class="eyebrow">03 / transfer lab</p>
+        <h2>Translate the structure, not the chessboard.</h2>
+        <div class="transfer-grid">
+          <article>
+            <h3>Assignment</h3>
+            <p><b>Variables:</b> person × role choices. <b>Partitions:</b> each person and role. <b>Conflicts:</b> unavailable pairs or incompatible certifications. <b>Objective:</b> maximize fit or minimize cost.</p>
+          </article>
+          <article>
+            <h3>Scheduling</h3>
+            <p><b>Variables:</b> job × time-slot choices. <b>Partitions:</b> each job and resource. <b>Conflicts:</b> overlap, setup, adjacency. <b>Objective:</b> minimize makespan or lateness.</p>
+          </article>
+          <article>
+            <h3>Portfolio / mandate</h3>
+            <p><b>Variables:</b> mandate × instrument selections. <b>Partitions:</b> mandates, sleeves, exposure buckets. <b>Conflicts:</b> concentration and policy exclusions. <b>Objective:</b> maximize expected utility under limits.</p>
+          </article>
+          <article>
+            <h3>Configuration / verification</h3>
+            <p><b>Variables:</b> component × setting choices. <b>Partitions:</b> required interfaces and zones. <b>Conflicts:</b> incompatible versions or safety rules. <b>Objective:</b> feasible configuration, then preferred cost/performance.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="content-section z3">
+        <p class="eyebrow">04 / solver context</p>
+        <h2>How Z3 fits</h2>
+        <p>Z3 is a general-purpose satisfiability modulo theories solver. In a Boolean encoding, a SAT-style engine proposes assignments and learns from conflicts; theory solvers add disciplined reasoning for domains such as arithmetic, arrays, and bit-vectors. CDCL(T) is the useful conceptual pipeline: <b>encode</b> a contract → <b>search</b> a Boolean skeleton → <b>check</b> theory consistency → <b>learn</b> a blocking explanation → <b>return</b> SAT with a model, UNSAT, or UNKNOWN. This page’s trace is deliberately a small transparent backtracker, not a reconstruction of that internal process.</p>
+      </section>
+
+      <section id="ledger" class="content-section ledger">
+        <p class="eyebrow">05 / research ledger</p>
+        <h2>Claims with a trail.</h2>
+        <p>The LinkedIn Queens variant used here requires exactly one queen in every row, column, and coloured region, while forbidding queens in adjacent cells, including orthogonally and diagonally. Because the row and column equations already exclude orthogonal neighbors, only the 72 local diagonal pairs add nonredundant exclusions when both those rule families are active. Classical N-Queens instead forbids attacks across full diagonals.</p>
+        <ul>
+          <li><a href="https://doi.org/10.1007/978-3-540-78800-3_24" target="_blank" rel="noreferrer">Z3: An Efficient SMT Solver</a> — original architecture paper.</li>
+          <li><a href="https://z3prover.github.io/papers/programmingz3.html" target="_blank" rel="noreferrer">Programming Z3</a> and <a href="https://z3prover.github.io/papers/z3internals.html" target="_blank" rel="noreferrer">Z3 Internals</a> — primary technical references.</li>
+          <li><a href="https://microsoft.github.io/z3guide/docs/logic/propositional-logic/" target="_blank" rel="noreferrer">Z3 Guide: propositional logic</a> and <a href="https://microsoft.github.io/z3guide/docs/optimization/arithmeticaloptimization/" target="_blank" rel="noreferrer">arithmetic optimization</a>.</li>
+          <li><a href="https://www.linkedin.com/help/linkedin/answer/a6269510" target="_blank" rel="noreferrer">LinkedIn Queens help</a> — game rule source.</li>
+          <li><a href="https://arxiv.org/abs/cs/0111037" target="_blank" rel="noreferrer">User-friendly explanations for constraint programming</a> and <a href="https://cdn.aaai.org/ocs/ws/ws0590/2029-8494-1-PB.pdf" target="_blank" rel="noreferrer">Visualization for Structured Constraint Satisfaction Problems</a>.</li>
+        </ul>
+      </section>
+
+      <footer>Constraint Atlas · A compact field guide to inspectable constraints.</footer>
+    </main>
+
+    <script>globalThis.CONSTRAINT_ATLAS_DATA = %%MODEL_DATA%%;</script>
+    <script>%%MODEL_JS%%</script>
+    <script>%%APP_JS%%</script>
+  </body>
+</html>
