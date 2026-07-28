@@ -8,6 +8,9 @@ const projectRoot = path.resolve(
   "..",
 );
 const sourcePath = (...parts) => path.join(projectRoot, ...parts);
+const pagesBuild = process.argv.includes("--pages");
+const defaultPagesUrl =
+  "https://joeywilkes12.github.io/constraint-atlas-queens/";
 
 const [
   template,
@@ -94,17 +97,32 @@ if (
   throw new Error(`Unresolved template tokens: ${unresolvedTokens.join(", ")}`);
 }
 
-const workerSource = createWorkerSource(html);
-const serverOutput = sourcePath("dist", "server", "index.js");
-const clientOutput = sourcePath("dist", "client", "og.png");
-await Promise.all([
-  mkdir(path.dirname(serverOutput), { recursive: true }),
-  mkdir(path.dirname(clientOutput), { recursive: true }),
-]);
-await Promise.all([
-  writeFile(serverOutput, workerSource, "utf8"),
-  copyFile(sourcePath("public", "og.png"), clientOutput),
-]);
+if (pagesBuild) {
+  const pagesUrl = normalizePagesUrl(process.env.PAGES_URL ?? defaultPagesUrl);
+  const pagesHtml = html.replaceAll(
+    "%%OG_IMAGE_URL%%",
+    escapeAttribute(new URL("og.png", pagesUrl).toString()),
+  );
+  const pagesOutput = sourcePath("dist", "pages");
+  await mkdir(pagesOutput, { recursive: true });
+  await Promise.all([
+    writeFile(path.join(pagesOutput, "index.html"), pagesHtml, "utf8"),
+    writeFile(path.join(pagesOutput, ".nojekyll"), "", "utf8"),
+    copyFile(sourcePath("public", "og.png"), path.join(pagesOutput, "og.png")),
+  ]);
+} else {
+  const workerSource = createWorkerSource(html);
+  const serverOutput = sourcePath("dist", "server", "index.js");
+  const clientOutput = sourcePath("dist", "client", "og.png");
+  await Promise.all([
+    mkdir(path.dirname(serverOutput), { recursive: true }),
+    mkdir(path.dirname(clientOutput), { recursive: true }),
+  ]);
+  await Promise.all([
+    writeFile(serverOutput, workerSource, "utf8"),
+    copyFile(sourcePath("public", "og.png"), clientOutput),
+  ]);
+}
 
 function validateData(value) {
   if (value.size !== 7) throw new Error("Constraint Atlas production board must be 7×7");
@@ -207,6 +225,19 @@ function escapeInlineScript(value) {
 
 function escapeInlineStyle(value) {
   return String(value).replace(/<\/style/gi, "<\\/style");
+}
+
+function normalizePagesUrl(value) {
+  const pagesUrl = new URL(value);
+  if (pagesUrl.protocol !== "https:") {
+    throw new Error("PAGES_URL must use HTTPS");
+  }
+  if (!pagesUrl.pathname.endsWith("/")) {
+    pagesUrl.pathname += "/";
+  }
+  pagesUrl.search = "";
+  pagesUrl.hash = "";
+  return pagesUrl;
 }
 
 function createWorkerSource(pageHtml) {

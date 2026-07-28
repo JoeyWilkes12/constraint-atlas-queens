@@ -5,11 +5,15 @@ A single-page constraint workbench that uses a compact regional Queens board to 
 ## Table of contents
 
 - [What the workbench does](#what-the-workbench-does)
+- [Published workbench](#published-workbench)
+- [Companion screenshot solver](#companion-screenshot-solver)
 - [Evidence boundaries](#evidence-boundaries)
 - [Regional Queens contract](#regional-queens-contract)
 - [Encodings](#encodings)
 - [Research ledger](#research-ledger)
-- [Production build](#production-build)
+- [Specification and provenance](#specification-and-provenance)
+- [Production builds](#production-builds)
+- [GitHub Pages deployment](#github-pages-deployment)
 
 ## What the workbench does
 
@@ -18,6 +22,23 @@ A single-page constraint workbench that uses a compact regional Queens board to 
 - Runs a deterministic, bounded JavaScript backtracking checker for the visible draft and exposes its teaching trace.
 - Produces a copyable and exportable SMT-LIB Boolean-grid encoding.
 - Separates the supplied baseline, derived board analysis, and illustrative search so that the page never represents its own trace as Z3 output.
+
+## Published workbench
+
+- [Open Constraint Atlas on GitHub Pages](https://joeywilkes12.github.io/constraint-atlas-queens/).
+- [Open the existing Sites deployment](https://constraint-atlas-queens.yoshirex12.chatgpt.site).
+
+The Sites deployment remains available while the GitHub Pages publication is
+validated. The repository keeps both build targets so the hosting decision can
+be changed without rewriting the workbench.
+
+## Companion screenshot solver
+
+[LinkedIn Queens Screenshot Solver](https://github.com/JoeyWilkes12/Queens) is
+the operational Python/Streamlit companion. It reads a blank puzzle screenshot
+with OpenCV, infers the colored regions, and solves the board with Z3. The two
+products share the regional Queens model and documentation, but they have
+independent runtimes, releases, and repositories.
 
 ## Evidence boundaries
 
@@ -52,13 +73,24 @@ The interface compares three alternatives:
 - [User-friendly explanations for constraint programming](https://arxiv.org/abs/cs/0111037)
 - [Visualization for Structured Constraint Satisfaction Problems](https://cdn.aaai.org/ocs/ws/ws0590/2029-8494-1-PB.pdf)
 
+## Specification and provenance
+
+[Constraint Atlas: Queens as a Constraint-Modeling Laboratory](CONSTRAINT_ATLAS_SPEC.md)
+defines the mathematical contract, evidence boundaries, architecture
+alternatives, acceptance criteria, and proposed Z3-backed extensions. The
+specification originated in the screenshot-solver repository in commit
+[`e6382023ea8c06d35e2ad301f4623f131f593cc5`](https://github.com/JoeyWilkes12/Queens/commit/e6382023ea8c06d35e2ad301f4623f131f593cc5);
+its provenance note preserves that lineage after the project split.
+
 ## Project shape
 
 The existing vinext source and Sites configuration are intentionally preserved as the design/reference implementation. No database, login, or remote state is required: the model state is purely in the current browser session.
 
-## Production build
+## Production builds
 
-The production build is a zero-dependency, browser-native Cloudflare Worker, not a vinext build. External package installation was unavailable in this environment, so `npm run build` uses only Node built-ins to combine:
+Both production builds are zero-dependency and browser-native. External package
+installation was unavailable in the original build environment, so the scripts
+use only Node built-ins to combine:
 
 - `static/index.template.html`, the source-controlled server-rendered page;
 - `static/model-data.json`, the verified 7×7 regions, baseline, and rule copy;
@@ -66,6 +98,27 @@ The production build is a zero-dependency, browser-native Cloudflare Worker, not
 - `static/app.js`, the accessible draft → Run interaction layer; and
 - `app/globals.css`, shared directly with the vinext reference surface.
 
-The build emits `dist/server/index.js` as Cloudflare Worker-compatible ESM and copies `public/og.png` to `dist/client/og.png`. The Worker derives absolute Open Graph and Twitter image URLs from each request origin and delegates `/og.png` to `env.ASSETS` when that binding is available.
+`npm run build` emits `dist/server/index.js` as Cloudflare Worker-compatible
+ESM and copies `public/og.png` to `dist/client/og.png`. The Worker derives
+absolute Open Graph and Twitter image URLs from each request origin and
+delegates `/og.png` to `env.ASSETS` when that binding is available.
 
-Both `npm run build` and `npm test` work without an installed `node_modules` directory. The vinext files remain available for future restoration or comparison, but the production output must not be described as a vinext build.
+`npm run build:pages` emits a standalone `dist/pages/index.html`,
+`dist/pages/og.png`, and `.nojekyll`. The HTML contains the complete CSS, model
+data, model, and interface code; only the social image is a separate asset.
+
+Both `npm run build` and `npm test` work without an installed `node_modules`
+directory. The vinext files remain available for future restoration or
+comparison. The generated production outputs are not a vinext build.
+
+## GitHub Pages deployment
+
+The workflow at `.github/workflows/pages.yml` runs the complete model and
+rendering tests, injects the GitHub project-site URL into social metadata,
+uploads `dist/pages`, and deploys it through GitHub's official Pages actions.
+It runs on pushes to `main` and can also be started manually.
+
+Repository administrators must select **GitHub Actions** as the Pages source.
+The workflow uses the standard `pages: write` and `id-token: write`
+permissions documented by
+[GitHub Pages custom workflows](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).

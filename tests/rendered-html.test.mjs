@@ -88,6 +88,24 @@ test("the Worker delegates the social image to ASSETS", async () => {
   assert.equal(missing.status, 404);
 });
 
+test("the GitHub Pages build is complete and uses the project-site URL", async () => {
+  const html = await readFile(
+    new URL("../dist/pages/index.html", import.meta.url),
+    "utf8",
+  );
+  assert.match(
+    html,
+    /<meta property="og:image" content="https:\/\/joeywilkes12\.github\.io\/constraint-atlas-queens\/og\.png">/,
+  );
+  assert.match(
+    html,
+    /<meta name="twitter:image" content="https:\/\/joeywilkes12\.github\.io\/constraint-atlas-queens\/og\.png">/,
+  );
+  assert.equal((html.match(/data-cell="\d+"/g) ?? []).length, 49);
+  assert.match(html, /ConstraintAtlasModel/);
+  assert.doesNotMatch(html, /%%[A-Z_]+%%/);
+});
+
 test("the verified model and independent no-touch semantics remain intact", async () => {
   const { data, model } = await loadModel();
   assert.equal(data.size, 7);
@@ -162,6 +180,8 @@ test("static sources, output asset, and zero-dependency scripts are coherent", a
     packageLockSource,
     publicOg,
     builtOg,
+    pagesOg,
+    noJekyll,
   ] = await Promise.all([
     readFile(new URL("../static/index.template.html", import.meta.url), "utf8"),
     readFile(new URL("../static/app.js", import.meta.url), "utf8"),
@@ -174,14 +194,20 @@ test("static sources, output asset, and zero-dependency scripts are coherent", a
     readFile(new URL("../package-lock.json", import.meta.url), "utf8"),
     readFile(new URL("../public/og.png", import.meta.url)),
     readFile(new URL("../dist/client/og.png", import.meta.url)),
+    readFile(new URL("../dist/pages/og.png", import.meta.url)),
+    readFile(new URL("../dist/pages/.nojekyll", import.meta.url), "utf8"),
   ]);
 
   const packageJson = JSON.parse(packageSource);
   const packageLock = JSON.parse(packageLockSource);
   assert.equal(packageJson.scripts.build, "node scripts/build-static.mjs");
   assert.equal(
+    packageJson.scripts["build:pages"],
+    "node scripts/build-static.mjs --pages",
+  );
+  assert.equal(
     packageJson.scripts.test,
-    "npm run build && node --test tests/rendered-html.test.mjs",
+    "npm run build && npm run build:pages && node --test tests/rendered-html.test.mjs",
   );
   assert.equal(packageJson.dependencies, undefined);
   assert.equal(packageJson.devDependencies, undefined);
@@ -202,6 +228,8 @@ test("static sources, output asset, and zero-dependency scripts are coherent", a
   assert.match(page, /not Z3’s internal trace/);
   assert.match(layout, /Constraint Atlas/);
   assert.match(readme, /not a vinext build/i);
-  assert.match(readme, /without an installed `node_modules` directory/i);
+  assert.match(readme, /without an installed `node_modules`\s+directory/i);
   assert.deepEqual(builtOg, publicOg);
+  assert.deepEqual(pagesOg, publicOg);
+  assert.equal(noJekyll, "");
 });
