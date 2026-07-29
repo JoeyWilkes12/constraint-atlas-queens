@@ -1,0 +1,9 @@
+run = "npm run build:pages && python3 -m http.server 3000 --directory dist/pages"
+
+[[ports]]
+localPort = 3000
+externalPort = 80
+
+[deployment]
+build = "npm run build:pages"
+ignorePorts = true

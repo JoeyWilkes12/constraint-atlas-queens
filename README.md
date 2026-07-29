@@ -14,6 +14,7 @@ A single-page constraint workbench that uses a compact regional Queens board to 
 - [Specification and provenance](#specification-and-provenance)
 - [Production builds](#production-builds)
 - [GitHub Pages deployment](#github-pages-deployment)
+- [Replit deployment](#replit-deployment)
 
 ## What the workbench does
 
@@ -122,3 +123,17 @@ Repository administrators must select **GitHub Actions** as the Pages source.
 The workflow uses the standard `pages: write` and `id-token: write`
 permissions documented by
 [GitHub Pages custom workflows](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).
+
+## Replit deployment
+
+Constraint Atlas is suitable for a public
+[Replit Static Deployment](https://docs.replit.com/cloud-services/deployments/static-deployments):
+run `npm run build:pages` and publish `dist/pages`. It needs no server,
+database, storage, or Reserved VM.
+
+GitHub
+[`JoeyWilkes12/constraint-atlas-queens`](https://github.com/JoeyWilkes12/constraint-atlas-queens)
+`main` is the authoritative source for final deployments. Replit source
+control and repository visibility are already integrated with GitHub. See
+[the complete Replit deployment specification](REPLIT_DEPLOYMENT_SPEC.md) for
+the release, social-metadata, operations, and acceptance contract.
