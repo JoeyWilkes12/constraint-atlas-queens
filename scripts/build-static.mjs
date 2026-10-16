@@ -109,6 +109,8 @@ if (pagesBuild) {
     writeFile(path.join(pagesOutput, "index.html"), pagesHtml, "utf8"),
     writeFile(path.join(pagesOutput, ".nojekyll"), "", "utf8"),
     copyFile(sourcePath("public", "og.png"), path.join(pagesOutput, "og.png")),
+    copyFile(sourcePath("public", "constraint-atlas-qr.svg"), path.join(pagesOutput, "constraint-atlas-qr.svg")),
+    copyFile(sourcePath("public", "constraint-atlas-qr.png"), path.join(pagesOutput, "constraint-atlas-qr.png")),
   ]);
 } else {
   const workerSource = createWorkerSource(html);
