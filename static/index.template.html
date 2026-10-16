@@ -40,6 +40,11 @@
           <span>Finite domains</span>
           <span>Transparent search</span>
         </div>
+        <a class="guide-banner" href="https://joeywilkes12.github.io/queens-model-assessment/#/how-z3-solves-queens">
+          <span class="guide-banner-label">New · step-by-step guide</span>
+          <strong>How Z3 solves Queens</strong>
+          <span>Nine short chapters for mathematics undergraduates: encoding, propagation, conflict-driven learning, Hall's theorem and uniqueness proofs, each on a real recorded run. Part of the Queens model assessment.</span>
+        </a>
       </section>
 
       <section id="workbench" class="workbench" aria-labelledby="workbench-title">
@@ -206,7 +211,7 @@
       <section class="content-section z3">
         <p class="eyebrow">04 / solver context</p>
         <h2>How Z3 fits</h2>
-        <p>Z3 is a general-purpose satisfiability modulo theories solver. In a Boolean encoding, a SAT-style engine proposes assignments and learns from conflicts; theory solvers add disciplined reasoning for domains such as arithmetic, arrays, and bit-vectors. CDCL(T) is the useful conceptual pipeline: <b>encode</b> a contract → <b>search</b> a Boolean skeleton → <b>check</b> theory consistency → <b>learn</b> a blocking explanation → <b>return</b> SAT with a model, UNSAT, or UNKNOWN. This page’s trace is deliberately a small transparent backtracker, not a reconstruction of that internal process.</p>
+        <p>Z3 is a general-purpose satisfiability modulo theories solver. In a Boolean encoding, a SAT-style engine proposes assignments and learns from conflicts; theory solvers add disciplined reasoning for domains such as arithmetic, arrays, and bit-vectors. CDCL(T) is the useful conceptual pipeline: <b>encode</b> a contract → <b>search</b> a Boolean skeleton → <b>check</b> theory consistency → <b>learn</b> a blocking explanation → <b>return</b> SAT with a model, UNSAT, or UNKNOWN. This page’s trace is deliberately a small transparent backtracker, not a reconstruction of that internal process. For the real mechanics, a recorded conflict-driven run with learned clauses and Z3’s measured engine route, read <a href="https://joeywilkes12.github.io/queens-model-assessment/#/how-z3-solves-queens">How Z3 solves Queens</a>.</p>
       </section>
 
       <section id="ledger" class="content-section ledger">
